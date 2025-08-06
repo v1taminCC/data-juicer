@@ -35,18 +35,18 @@ class ImageRemoveBackgroundMapper(Mapper):
         """
         Initialization method.
 
-        alpha_matting (bool, optional):
+        :param alpha_matting: (bool, optional)
             Flag indicating whether to use alpha matting. Defaults to False.
-        alpha_matting_foreground_threshold (int, optional):
+        :param alpha_matting_foreground_threshold: (int, optional)
             Foreground threshold for alpha matting. Defaults to 240.
-        alpha_matting_background_threshold (int, optional):
+        :param alpha_matting_background_threshold: (int, optional)
             Background threshold for alpha matting. Defaults to 10.
-        alpha_matting_erode_size (int, optional):
+        :param alpha_matting_erode_size: (int, optional)
             Erosion size for alpha matting. Defaults to 10.
-        bgcolor (Optional[Tuple[int, int, int, int]], optional):
+        :param bgcolor: (Optional[Tuple[int, int, int, int]], optional)
             Background color for the cutout image. Defaults to None.
-        *args (Optional[Any]): Additional positional arguments.
-        **kwargs (Optional[Any]): Additional keyword arguments.
+        :param *args: (Optional[Any]) Additional positional arguments.
+        :param **kwargs: (Optional[Any]) Additional keyword arguments.
 
         """
 
