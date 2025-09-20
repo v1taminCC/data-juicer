@@ -40,7 +40,7 @@ jobs:
         which data-juicer || echo "data-juicer command not found after install"
 
     # 步骤 4: 运行数据清洗 (Chinese)
-    - name: Run DataJuicer (Chinese) 
+    - name: Run DataJuicer (Chinese)
       run: |
         # 尝试直接调用命令
 #        data-juicer tools run --config ./configs/config_zh.yaml
