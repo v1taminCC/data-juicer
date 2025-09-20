@@ -39,13 +39,21 @@ jobs:
         # 检查 data-juicer 命令是否可用
         which data-juicer || echo "data-juicer command not found after install"
 
+    - name: Set PYTHONPATH
+      run: |
+          # 将项目根目录（或 Data-Juicer 源码目录）添加到 PYTHONPATH
+          echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          # 如果你的 Data-Juicer 源码在子目录中，例如名为 'data-juicer' 的文件夹
+          # echo "PYTHONPATH=$GITHUB_WORKSPACE/data-juicer" >> $GITHUB_ENV
+          echo "PYTHONPATH is now: $PYTHONPATH"
+
     # 步骤 4: 运行数据清洗 (Chinese)
     - name: Run DataJuicer (Chinese)
       run: |
         # 尝试直接调用命令
-        #data-juicer tools run --config ./configs/config_zh.yaml
+        #data-juicer tools run --config ../configs/config_zh.yaml
          #如果上述命令仍找不到，尝试使用 Python 模块方式调用 :cite[2]
-         python -m data_juicer.tools.run --config ./configs/config_en.yaml
+         python -m data_juicer.tools.run --config ../configs/config_en.yaml
       # 可以指定工作目录，确保路径正确
       working-directory: ${{ github.workspace }} # 确保路径基准是仓库根目录
 
