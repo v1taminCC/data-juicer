@@ -45,7 +45,7 @@ jobs:
         # 尝试直接调用命令
 #        data-juicer tools run --config ./configs/config_zh.yaml
 #         如果上述命令仍找不到，尝试使用 Python 模块方式调用 :cite[2]
-         python -m data_juicer.tools.run --config ./configs/config_zh.yaml
+         python -m data_juicer.tools.run --config ./configs/config_en.yaml
       # 可以指定工作目录，确保路径正确
       working-directory: ${{ github.workspace }} # 确保路径基准是仓库根目录
 
