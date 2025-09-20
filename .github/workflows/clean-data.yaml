@@ -1,0 +1,53 @@
+name: Data Cleaning Pipeline # 工作流的名称，会在Actions页面显示
+
+on: # 定义什么事件触发这个工作流
+  push: # 当代码推送到仓库时触发
+    branches: [ main, master ] # 只在推送到 main 或 master 分支时触发
+    paths: # 【可选】只有指定路径下的文件发生变更时才触发，提高效率
+      - 'configs/**' # 只有当 configs 文件夹下的文件变动了，才运行
+  workflow_dispatch: # 【重要】允许在GitHub网页上手动触发工作流
+
+jobs:
+  clean-chinese-data: # 定义一个清洗中文数据的任务
+    runs-on: ubuntu-latest # 在最新的Ubuntu系统上运行
+    defaults: # 为这个job中的所有步骤设置默认值
+      run: # 设置默认的工作目录，这样后面的步骤都可以用相对路径了
+        working-directory: ${{ github.workspace }} 
+
+    steps:
+    # 步骤 1: 获取代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 步骤 2: 设置Python环境
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11' # 指定Python版本
+
+    # 步骤 3: 安装依赖
+    - name: Install dependencies
+      run: |
+        pip install py-data-juicer
+        # 可以在这里安装其他需要的包，比如 pandas, numpy 等
+        # pip install pandas numpy
+
+    # 步骤 4: 运行数据清洗 (使用中文配置)
+    - name: Run DataJuicer (Chinese)
+      run: |
+        data-juicer tools run --config ./configs/config_zh.yaml
+      # 如果上述命令找不到，尝试用python模块方式运行：
+      # python -m data_juicer.tools.run --config ./configs/config_zh.yaml
+
+    # 步骤 5: 【重要】上传清洗后的数据作为“产物”(Artifact)
+    - name: Upload cleaned data (Artifact)
+      uses: actions/upload-artifact@v4
+      with:
+        name: cleaned-chinese-data # 产物的名称，方便你下载时识别
+        path: ./cleaned_data/ # 这个路径必须和你的config_zh.yaml里export_path的目录一致！
+        # 例如，如果你的export_path是 './cleaned_data/clean.jsonl'，那么这里就上传其父目录 './cleaned_data'
+        retention-days: 7 # 产物在GitHub上保留的天数（最长90天）
+
+  # 你可以再定义一个job来清洗英文数据，两个job会并行运行
+  # clean-english-data:
+  #   ... 步骤类似 ...

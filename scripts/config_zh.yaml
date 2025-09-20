@@ -1,0 +1,48 @@
+# global parameters
+project_name: 'openfinllm-zh'
+dataset_path: "D:\GitHub\data-juicer\raw_data\dataset_info.json"   # path to your dataset directory or file
+export_path: "D:\GitHub\data-juicer\cleaned_data\dataset_info.json"
+
+np: 50  # number of subprocess to process your dataset
+open_tracer: true
+
+# process schedule
+# a list of several process operators with their arguments
+process:
+  - clean_email_mapper:
+  - clean_links_mapper:
+  - fix_unicode_mapper:
+  - punctuation_normalization_mapper:
+  - whitespace_normalization_mapper:
+
+  - character_repetition_filter:
+      rep_len: 10
+      max_ratio: 0.4  # >3sigma (0.197)
+  - flagged_words_filter: # 16954629
+      lang: zh
+      tokenization: true
+      use_words_aug: true
+      max_ratio: 0.017
+  - perplexity_filter:
+      lang: zh
+      max_ppl: 9999  # 3sigma
+  - special_characters_filter:
+      max_ratio: 0.5  # >3sigma (0.34)
+  - words_num_filter:
+      lang: zh
+      tokenization: true
+      min_num: 20
+      max_num: 6086  # 3sigma
+  - word_repetition_filter:
+      lang: zh
+      tokenization: true
+      rep_len: 10
+      max_ratio: 0.3  # 3sigma (0.194)
+
+  - document_simhash_deduplicator:
+      tokenization: space
+      window_size: 6
+      lowercase: true
+      ignore_pattern: '\p{P}'
+      num_blocks: 6
+      hamming_distance: 4
