@@ -25,19 +25,30 @@ jobs:
       with:
         python-version: '3.11' # 指定Python版本
 
-    # 步骤 3: 安装依赖
-    - name: Install dependencies
+    # 步骤 3: 安装依赖 (推荐方案一：从源码安装)
+    - name: Install dependencies from source
       run: |
-        pip install py-data-juicer
-        # 可以在这里安装其他需要的包，比如 pandas, numpy 等
-        # pip install pandas numpy
+        # 克隆 Data-Juicer 仓库 (如果尚未包含在你的仓库中)
+        # git clone https://github.com/modelscope/data-juicer.git
+        # 进入目录，如果你的项目结构不同，请调整路径
+        # cd data-juicer
 
-    # 步骤 4: 运行数据清洗 (使用中文配置)
+        # 使用开发模式安装，这是关键！:cite[2]:cite[6]
+        pip install -v -e .
+
+        # 检查 data-juicer 命令是否可用
+        which data-juicer || echo "data-juicer command not found after install"
+
+    # 步骤 4: 运行数据清洗 (Chinese)
     - name: Run DataJuicer (Chinese)
       run: |
+        # 尝试直接调用命令
         data-juicer tools run --config ./configs/config_zh.yaml
-      # 如果上述命令找不到，尝试用python模块方式运行：
-      # python -m data_juicer.tools.run --config ./configs/config_zh.yaml
+        # 如果上述命令仍找不到，尝试使用 Python 模块方式调用 :cite[2]
+        # python -m data_juicer.tools.run --config ./configs/config_zh.yaml
+      # 可以指定工作目录，确保路径正确
+      working-directory: ${{ github.workspace }} # 确保路径基准是仓库根目录
+
 
     # 步骤 5: 【重要】上传清洗后的数据作为“产物”(Artifact)
     - name: Upload cleaned data (Artifact)
